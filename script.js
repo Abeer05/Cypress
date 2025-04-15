@@ -150,11 +150,14 @@ document
     const slider = document.createElement("div");
     slider.classList.add("slider");
 
-    Array.from(files).forEach((file) => {
+    Array.from(files).forEach((file, index) => {
       const mediaElement = document.createElement(
         file.type.startsWith("image") ? "img" : "video"
       );
       mediaElement.classList.add("slide");
+      if (index === 0) {
+        mediaElement.classList.add("active");
+      }
       mediaElement.src = URL.createObjectURL(file);
 
       if (file.type.startsWith("video")) {
