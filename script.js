@@ -267,14 +267,17 @@ function showNotification(
   } else if (type === "dispute") {
     notification.classList.add("notification-dispute");
     notification.innerHTML = `<strong>❌ Disputed!</strong> Your location "${locationTitle}" was disputed`;
+  } else if (type === "comment") {
+    notification.innerHTML = `💬 New comment added to <strong>${locationTitle}</strong> (ID: ${reportId}).`;
+    notification.classList.add("notification-comment");
   }
 
   // Make it look clickable
   notification.style.cursor = "pointer";
 
-  // Style the notification
   notification.style.backgroundColor =
-    type === "confirm" ? "#4CAF50" : "#f44336";
+    type === "confirm" ? "#4CAF50" : type === "dispute" ? "#f44336" : "#2196F3"; // Blue for comment
+
   notification.style.color = "white";
   notification.style.padding = "16px";
   notification.style.borderRadius = "4px";
@@ -555,6 +558,42 @@ function initMap() {
     .getElementById("addPlaceForm")
     .addEventListener("submit", handleFormSubmit);
 }
+function openCommentForm(id) {
+  document.getElementById(`comment-form-${id}`).style.display = "block";
+}
+
+function submitComment(id) {
+  const text = document.getElementById(`comment-text-${id}`).value;
+  const selectElem = document.getElementById(`comment-tags-${id}`);
+  const selectedOptions = Array.from(selectElem.selectedOptions);
+  const tags = selectedOptions.map((option) => option.value);
+
+  if (!text) return;
+
+  // Find the correct marker using the id (assumes count = index of marker)
+  const marker = markers[id - 1];
+  const comment = { text, tags, timestamp: new Date().toLocaleString() };
+
+  marker.comments.push(comment);
+
+  // Append comment to UI
+  const commentList = document.getElementById(`comments-${id}`);
+  const commentHTML = `
+    <li>
+      <p>${text}</p>
+      <small>${comment.timestamp}</small><br/>
+      <em>Tags: ${tags.join(", ")}</em>
+    </li>
+  `;
+  commentList.insertAdjacentHTML("beforeend", commentHTML);
+
+  // Clear form
+  document.getElementById(`comment-text-${id}`).value = "";
+  document.getElementById(`comment-tags-${id}`).value = "";
+  document.getElementById(`comment-form-${id}`).style.display = "none";
+  // At the bottom of submitComment(id)
+  showNotification("comment", marker.labelText, id);
+}
 
 function handleFormSubmit(event) {
   event.preventDefault();
@@ -620,7 +659,30 @@ function handleFormSubmit(event) {
       <button onclick="openCommentForm(${count})" class="comment-button">💬 Add Comment</button>
       <div id="comment-form-${count}" class="comment-form" style="display:none;">
         <textarea id="comment-text-${count}" placeholder="Write your comment..." rows="3"></textarea>
-        <input type="text" id="comment-tags-${count}" placeholder="Tags (comma-separated)">
+        <label for="comment-tags-${count}">Select Tags:</label>
+<select id="comment-tags-${count}" name="comment-tags-${count}" multiple required>
+  <optgroup label="Road Damage">
+    <option value="Pothole">Pothole</option>
+    <option value="Cracked Pavement">Cracked Pavement</option>
+    <option value="Faded Lane Markings">Faded Lane Markings</option>
+  </optgroup>
+  <optgroup label="Public Safety">
+    <option value="Street Light">Street Light</option>
+    <option value="Broken Sidewalk">Broken Sidewalk</option>
+    <option value="Obstructed Crosswalk">Obstructed Crosswalk</option>
+  </optgroup>
+  <optgroup label="Infrastructure">
+    <option value="Leaking Hydrant">Leaking Hydrant</option>
+    <option value="Manhole Cover Issue">Manhole Cover Issue</option>
+    <option value="Traffic Light Malfunction">Traffic Light Malfunction</option>
+  </optgroup>
+  <optgroup label="Environmental">
+    <option value="Garbage">Garbage</option>
+    <option value="Tree Hazard">Tree Hazard</option>
+    <option value="Illegal Dumping">Illegal Dumping</option>
+  </optgroup>
+</select>
+
         <button onclick="submitComment(${count})">Submit</button>
       </div>
     </div>
@@ -782,43 +844,6 @@ function handleFormSubmit(event) {
   });
 
   markers.push(marker);
-
-  function openCommentForm(id) {
-    document.getElementById(`comment-form-${id}`).style.display = "block";
-  }
-
-  function submitComment(id) {
-    const text = document.getElementById(`comment-text-${id}`).value;
-    const tagInput = document.getElementById(`comment-tags-${id}`).value;
-    const tags = tagInput
-      .split(",")
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
-
-    if (!text) return;
-
-    // Find the correct marker using the id (assumes count = index of marker)
-    const marker = markers[id - 1]; // adjust if your indexing differs
-    const comment = { text, tags, timestamp: new Date().toLocaleString() };
-
-    marker.comments.push(comment);
-
-    // Append comment to UI
-    const commentList = document.getElementById(`comments-${id}`);
-    const commentHTML = `
-      <li>
-        <p>${text}</p>
-        <small>${comment.timestamp}</small><br/>
-        <em>Tags: ${tags.join(", ")}</em>
-      </li>
-    `;
-    commentList.insertAdjacentHTML("beforeend", commentHTML);
-
-    // Clear form
-    document.getElementById(`comment-text-${id}`).value = "";
-    document.getElementById(`comment-tags-${id}`).value = "";
-    document.getElementById(`comment-form-${id}`).style.display = "none";
-  }
 
   window.mapMarkers = markers; // if you need global access
 
