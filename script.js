@@ -248,6 +248,93 @@ function initMap() {
   updateUserCredibilityDisplay();
 }
 
+function showNotification(type, locationTitle) {
+  let notificationContainer = document.getElementById("notificationContainer");
+  if (!notificationContainer) {
+    notificationContainer = document.createElement("div");
+    notificationContainer.id = "notification-container";
+    notificationContainer.style.position = "fixed";
+    notificationContainer.style.top = "20px";
+    notificationContainer.style.right = "20px";
+    notificationContainer.style.zIndex = "1000";
+    document.body.appendChild(notificationContainer);
+  }
+  // Create the notification element
+  const notification = document.createElement("div");
+  notification.classList.add("notification");
+
+  // Set styles based on notification type
+  if (type === "confirm") {
+    notification.classList.add("notification-confirm");
+    notification.innerHTML = `<strong>✅ Confirmed!</strong> Someone confirmed your location "${locationTitle}"`;
+  } else if (type === "dispute") {
+    notification.classList.add("notification-dispute");
+    notification.innerHTML = `<strong>⛔ Disputed!</strong> Someone disputed your location "${locationTitle}"`;
+  }
+
+  // Style the notification
+  notification.style.backgroundColor =
+    type === "confirm" ? "#4CAF50" : "#f44336";
+  notification.style.color = "white";
+  notification.style.padding = "15px";
+  notification.style.borderRadius = "4px";
+  notification.style.marginBottom = "15px";
+  notification.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
+  notification.style.position = "relative";
+  notification.style.minWidth = "350px";
+  notification.style.animation = "fadeIn 0.5s, fadeOut 0.5s 3.5s";
+  notification.style.opacity = "0";
+
+  // Add close button
+  const closeBtn = document.createElement("span");
+  closeBtn.innerHTML = "&times;";
+  closeBtn.style.position = "absolute";
+  closeBtn.style.top = "-5px";
+  // closeBtn.style.right = "10px";
+  closeBtn.style.cursor = "pointer";
+  closeBtn.style.fontSize = "20px";
+  closeBtn.onclick = function () {
+    notification.remove();
+  };
+  notification.appendChild(closeBtn);
+
+  // Add to container
+  notificationContainer.appendChild(notification);
+
+  // Add animation keyframes if not already added
+  if (!document.getElementById("notification-keyframes")) {
+    const style = document.createElement("style");
+    style.id = "notification-keyframes";
+    style.innerHTML = `
+     @keyframes fadeIn {
+       from {opacity: 0; transform: translateX(50px);}
+       to {opacity: 1; transform: translateX(0);}
+     }
+     @keyframes fadeOut {
+       from {opacity: 1; transform: translateX(0);}
+       to {opacity: 0; transform: translateX(50px);}
+     }
+   `;
+    document.head.appendChild(style);
+  }
+
+  // Animate in
+  setTimeout(() => {
+    notification.style.opacity = "1";
+    notification.style.animation = "fadeIn 0.5s";
+  }, 10);
+
+  // Auto-remove after 4 seconds
+  setTimeout(() => {
+    notification.style.animation = "fadeOut 0.5s forwards";
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 500);
+  }, 4000);
+}
+
 document
   .getElementById("addLocationModal")
   .addEventListener("submit", function (event) {
@@ -256,6 +343,7 @@ document
     const label = document.getElementById("placeTitle").value;
     const description = document.getElementById("placeDescription").value;
     const files = document.getElementById("placeFiles").files;
+    const email = document.getElementById("placeEmail").value;
 
     if (files.length > 5) {
       alert("You can only upload up to 5 files.");
@@ -360,6 +448,8 @@ document
       );
       credibilityElem.textContent = `Report Credibility: ${userCredibility.reportScores[thisReportIndex]}/100`;
       updateUserCredibilityDisplay();
+
+      showNotification("confirm", label);
     });
 
     const dislikeBtn = document.createElement("button");
@@ -374,6 +464,8 @@ document
       );
       credibilityElem.textContent = `Report Credibility: ${userCredibility.reportScores[thisReportIndex]}/100`;
       updateUserCredibilityDisplay();
+
+      showNotification("dispute", label);
     });
 
     feedbackDiv.appendChild(likeBtn);
