@@ -1,0 +1,216 @@
+html {
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.container-map {
+  box-sizing: initial;
+}
+
+#map {
+  height: 80vh;
+  margin-bottom: 20px;
+}
+
+h1,
+h4,
+h5,
+h2 {
+  font-weight: 600;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+#addLocation {
+  right: 10px;
+  position: absolute;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+#pins {
+  position: absolute;
+  left: 10px;
+  font-size: 35px;
+}
+
+.hidden {
+  display: none;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#treeLights {
+  flex-direction: column;
+}
+
+img,
+video {
+  height: 400px;
+  flex: 1 0 100%;
+  scroll-snap-align: start;
+  object-fit: cover;
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  padding: 1rem;
+  height: auto;
+}
+
+.slide {
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slider-dots {
+  position: relative;
+  column-gap: 1rem;
+  bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #fff;
+  opacity: 0.75;
+  transform: opacity 250ms ease;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-dot:hover {
+  opacity: 1;
+}
+
+.slider-dot.active {
+  background-color: purple;
+}
+
+.label {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 3px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Basic modal styling */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+  overflow: auto; /* Enable scroll if needed */
+  padding-top: 60px; /* Spacing from top */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto; /* Center the modal */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%; /* Width of the modal */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical; /* Allow vertical resize only */
+  height: 100px;
+}
+
+button[type="submit"],
+#closeModal {
+  background-color: #4caf50; /* Green background */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button[type="submit"]:hover,
+#closeModal:hover {
+  background-color: #45a049;
+}
+
+button[type="submit"]:focus,
+#closeModal:focus {
+  outline: none;
+}
+
+input[type="file"] {
+  padding: 6px;
+}
+
+input[type="file"]:focus {
+  border-color: #4caf50;
+}
+
+/* Modal close button styling */
+#closeModal {
+  background-color: #f44336; /* Red background for close */
+  float: right;
+  margin-top: -35px;
+}
+
+#closeModal:hover {
+  background-color: #e0352c;
+}
