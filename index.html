@@ -21,10 +21,16 @@
           <h2>Add New Location</h2>
           <form id="addPlaceForm">
             <label for="placeTitle">Label:</label>
-            <input type="text" id="placeTitle" name="placeTitle" required />
+            <input
+              type="text"
+              id="placeTitle"
+              name="placeTitle"
+              multiple
+              required
+            />
 
             <label for="placeTags">Select a tag:</label>
-            <select id="placeTags" name="placeTags" required>
+            <select id="placeTags" name="placeTags" multiple required>
               <optgroup label="Road Damage">
                 <option value="Pothole">Pothole</option>
                 <option value="Cracked Pavement">Cracked Pavement</option>
