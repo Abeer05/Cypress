@@ -22,15 +22,46 @@
           <form id="addPlaceForm">
             <label for="placeTitle">Label:</label>
             <input type="text" id="placeTitle" name="placeTitle" required />
+
+            <label for="placeTags">Select a tag:</label>
+            <select id="placeTags" name="placeTags" required>
+              <optgroup label="Road Damage">
+                <option value="Pothole">Pothole</option>
+                <option value="Cracked Pavement">Cracked Pavement</option>
+                <option value="Faded Lane Markings">Faded Lane Markings</option>
+              </optgroup>
+              <optgroup label="Public Safety">
+                <option value="Street Light">Street Light</option>
+                <option value="Broken Sidewalk">Broken Sidewalk</option>
+                <option value="Obstructed Crosswalk">
+                  Obstructed Crosswalk
+                </option>
+              </optgroup>
+              <optgroup label="Infrastructure">
+                <option value="Leaking Hydrant">Leaking Hydrant</option>
+                <option value="Manhole Cover Issue">Manhole Cover Issue</option>
+                <option value="Traffic Light Malfunction">
+                  Traffic Light Malfunction
+                </option>
+              </optgroup>
+              <optgroup label="Environmental">
+                <option value="Garbage">Garbage</option>
+                <option value="Tree Hazard">Tree Hazard</option>
+                <option value="Illegal Dumping">Illegal Dumping</option>
+              </optgroup>
+            </select>
+
             <label for="placeDescription">Description:</label>
             <textarea
               id="placeDescription"
               name="placeDescription"
               required
             ></textarea>
+
             <label for="placeFiles">Upload up to 5 images or videos:</label>
             <input type="file" id="placeFiles" name="placeFiles" multiple
             accept="image/*,video/*"" />
+
             <button type="submit">Submit</button>
           </form>
           <button id="closeModal" onclick="closeModal()">Cancel</button>
