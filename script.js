@@ -607,8 +607,26 @@ function handleFormSubmit(event) {
 
   // Update the displayed user credibility
   updateUserCredibilityDisplay();
-  const newPlaceContent = document.createElement("div");
-  newPlaceContent.id = `place-${count}`;
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = `
+    <div class="info-window" id="place-${count}">
+      <h3>${label}</h3>
+      <p>${description}</p>
+      <div><strong>Tags:</strong> ${tags.join(", ")}</div>
+      <div class="comments-section">
+        <h4>Comments & Updates</h4>
+        <ul class="comments-list" id="comments-${count}"></ul>
+      </div>
+      <button onclick="openCommentForm(${count})" class="comment-button">💬 Add Comment</button>
+      <div id="comment-form-${count}" class="comment-form" style="display:none;">
+        <textarea id="comment-text-${count}" placeholder="Write your comment..." rows="3"></textarea>
+        <input type="text" id="comment-tags-${count}" placeholder="Tags (comma-separated)">
+        <button onclick="submitComment(${count})">Submit</button>
+      </div>
+    </div>
+  `;
+
+  const newPlaceContent = tempDiv.firstElementChild;
 
   // Add report credibility display
   const credibilityElem = document.createElement("div");
@@ -731,6 +749,7 @@ function handleFormSubmit(event) {
   });
 
   // Store additional data on the marker
+  marker.comments = [];
   marker.labelText = label;
   marker.reportCredibility = reportCredibility;
   marker.coordinates = {
@@ -763,6 +782,44 @@ function handleFormSubmit(event) {
   });
 
   markers.push(marker);
+
+  function openCommentForm(id) {
+    document.getElementById(`comment-form-${id}`).style.display = "block";
+  }
+
+  function submitComment(id) {
+    const text = document.getElementById(`comment-text-${id}`).value;
+    const tagInput = document.getElementById(`comment-tags-${id}`).value;
+    const tags = tagInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+
+    if (!text) return;
+
+    // Find the correct marker using the id (assumes count = index of marker)
+    const marker = markers[id - 1]; // adjust if your indexing differs
+    const comment = { text, tags, timestamp: new Date().toLocaleString() };
+
+    marker.comments.push(comment);
+
+    // Append comment to UI
+    const commentList = document.getElementById(`comments-${id}`);
+    const commentHTML = `
+      <li>
+        <p>${text}</p>
+        <small>${comment.timestamp}</small><br/>
+        <em>Tags: ${tags.join(", ")}</em>
+      </li>
+    `;
+    commentList.insertAdjacentHTML("beforeend", commentHTML);
+
+    // Clear form
+    document.getElementById(`comment-text-${id}`).value = "";
+    document.getElementById(`comment-tags-${id}`).value = "";
+    document.getElementById(`comment-form-${id}`).style.display = "none";
+  }
+
   window.mapMarkers = markers; // if you need global access
 
   closeModal();

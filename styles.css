@@ -278,3 +278,41 @@ input[type="file"]:focus {
   background-color: #ffebee;
   color: #c62828;
 }
+.comment-button {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.comment-form textarea,
+.comment-form input {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.comment-form button {
+  margin-top: 5px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.comments-section {
+  margin-top: 10px;
+}
+.comments-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+.comments-list li {
+  margin-bottom: 8px;
+  background-color: #f8f9fa;
+  padding: 6px;
+  border-radius: 4px;
+}
