@@ -2,53 +2,50 @@
 //   button.classList.add("hidden");
 // });
 
-function dotCheck() {
-  if (document.querySelector(".slider-dots")) {
-    // document.getElementsByClassName("slide").classList.add("hidden");
-    const slides = document.querySelectorAll(".slide");
-    const dotsContainer = document.querySelector(".slider-dots");
-    const button = document.querySelector(".click");
-    // document.addEventListener("DOMContentLoaded", function () {
-    var firstDot = document.querySelector(".slider-dot");
-    if (firstDot) {
-      firstDot.click();
-    }
-    // });
+function dotCheck(slideContainer) {
+  const slides = slideContainer.querySelectorAll(".slide");
+  const dotsContainer = slideContainer.querySelector(".slider-dots");
 
-    slides.forEach((slide, index) => {
-      const dot = document.createElement("span");
-      dot.classList.add("slider-dot");
-      if (index === 0) {
-        dot.classList.add("active");
-      }
-      dot.addEventListener("click", () => {
-        showSlide(index);
-        updateActiveDot(index);
-      });
-      dotsContainer.appendChild(dot);
+  // Clear any existing dots first
+  dotsContainer.innerHTML = "";
+
+  // Create dots for each slide
+  slides.forEach((slide, index) => {
+    const dot = document.createElement("span");
+    dot.classList.add("slider-dot");
+    if (index === 0) {
+      dot.classList.add("active");
+    }
+    dot.addEventListener("click", () => {
+      showSlide(slides, index);
+      updateActiveDot(dotsContainer, index);
     });
+    dotsContainer.appendChild(dot);
+  });
 
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        if (i === index) {
-          slide.classList.add("active");
-        } else {
-          slide.classList.remove("active");
-        }
-      });
-    }
+  // Make sure the first slide is active
+  showSlide(slides, 0);
+}
 
-    function updateActiveDot(index) {
-      const dots = document.querySelectorAll(".slider-dot");
-      dots.forEach((dot, i) => {
-        if (i === index) {
-          dot.classList.add("active");
-        } else {
-          dot.classList.remove("active");
-        }
-      });
+function showSlide(slides, index) {
+  slides.forEach((slide, i) => {
+    if (i === index) {
+      slide.classList.add("active");
+    } else {
+      slide.classList.remove("active");
     }
-  }
+  });
+}
+
+function updateActiveDot(dotsContainer, index) {
+  const dots = dotsContainer.querySelectorAll(".slider-dot");
+  dots.forEach((dot, i) => {
+    if (i === index) {
+      dot.classList.add("active");
+    } else {
+      dot.classList.remove("active");
+    }
+  });
 }
 
 function openModal() {
@@ -218,10 +215,9 @@ document
     closeModal();
     document.getElementById("addPlaceForm").reset();
 
-    if (slider.children.length >= 2) {
-      setTimeout(() => {
-        dotCheck();
-      }, 1000); // 100ms delay should be sufficient
+    if (slider.children.length >= 1) {
+      // Call dotCheck directly, passing the specific container
+      dotCheck(newPlaceContent);
     }
   });
 

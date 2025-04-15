@@ -67,7 +67,7 @@ h1 {
 
 img,
 video {
-  height: 400px;
+  height: 300px;
   flex: 1 0 100%;
   scroll-snap-align: start;
   object-fit: cover;
