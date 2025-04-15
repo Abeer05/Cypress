@@ -64,6 +64,70 @@ let coords;
 let count = 0;
 let markers = [];
 
+// Helper function to calculate distance between two coordinates in kilometers
+function calculateDistance(pos1, pos2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = ((pos2.lat - pos1.lat) * Math.PI) / 180;
+  const dLng = ((pos2.lng - pos1.lng) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((pos1.lat * Math.PI) / 180) *
+      Math.cos((pos2.lat * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Helper function to count common words between two strings
+function countCommonWords(str1, str2) {
+  // Split strings into arrays of words and convert to lowercase
+  const words1 = str1
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((word) => word.length > 0);
+  const words2 = str2
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((word) => word.length > 0);
+
+  // Count common words
+  let commonCount = 0;
+  for (const word1 of words1) {
+    if (words2.includes(word1)) {
+      commonCount++;
+    }
+  }
+
+  return commonCount;
+}
+
+// Function to check if a new marker would be a duplicate
+function isDuplicate(newPosition, newLabel) {
+  for (const marker of markers) {
+    const markerPos = marker.getPosition().toJSON();
+    const distance = calculateDistance(markerPos, newPosition);
+
+    // Check if within 3 kilometers
+    if (distance <= 3) {
+      // Get the existing marker's label
+      let existingLabel = "";
+      if (marker.labelText) {
+        existingLabel = marker.labelText;
+      }
+
+      // Count common words
+      const commonWords = countCommonWords(existingLabel, newLabel);
+
+      // If 3 or more common words, it's a duplicate
+      if (commonWords >= 3) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 43.65824087578518, lng: -79.37912807238386 },
@@ -138,6 +202,19 @@ document
       return;
     }
 
+    // Check for duplicate locations
+    const newPosition = {
+      lat: coords.lat(),
+      lng: coords.lng(),
+    };
+
+    if (isDuplicate(newPosition, label)) {
+      alert(
+        "A similar location already exists within 3 kilometers. Please choose a different location or title."
+      );
+      return;
+    }
+
     count++;
 
     const newPlaceContent = document.createElement("div");
@@ -187,6 +264,9 @@ document
         labelOrigin: new google.maps.Point(15, 50),
       },
     });
+
+    // Store the label text as a property on the marker object for future duplicate checks
+    marker.labelText = label;
 
     marker.addListener("mouseover", function () {
       marker.setLabel({
